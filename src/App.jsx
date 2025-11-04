@@ -27,6 +27,7 @@ import ClientDetail from './pages/clients/ClientDetail';
 import MemberDetail from './pages/members/MemberDetail';
 import ProfileSettings from './pages/Settings/ProfileSettings';
 import RecentActivityDetailPage from './components/dashboard/RecentActivityDetailedPage';
+import InstallPopup from './components/ui/InstallPopup';
 
 
 
@@ -34,6 +35,8 @@ import RecentActivityDetailPage from './components/dashboard/RecentActivityDetai
 
 function App() {
   return (
+    <>
+    
   <Router>
       <Routes>
           <Route path="/login" element={<LoginForm />} />
@@ -67,7 +70,8 @@ function App() {
           </Route>
       </Routes>
     </Router>
-     
+    <InstallPopup />
+     </>
   )
 }
 

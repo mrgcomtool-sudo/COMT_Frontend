@@ -1,13 +1,36 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-// https://vite.dev/config/
+import { VitePWA } from 'vite-plugin-pwa'
+
 export default defineConfig({
-  // server: {
-  //   host: "::",
-  //   port: 5173,
-  // },
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Aymen InfraTech - Project Manager App',
+        short_name: 'Aymen-COMT',
+        description: 'Construction Project Management Tool',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#1E3A8A',
+        icons: [
+          {
+            src: '/icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: '/icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          }
+        ]
+      }
+    })
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
