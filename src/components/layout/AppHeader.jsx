@@ -1,4 +1,4 @@
-import { Bell, Search, User, ChevronDown } from "lucide-react";
+import { Bell, Search, User, ChevronDown, ArrowLeft } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,8 +52,14 @@ export function AppHeader({title}) {
   return (
     <header className="h-16  border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50  ">
       <div className="h-full flex items-center justify-between px-4 gap-4">
+       
         <div className="flex items-center gap-4">
           <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-smooth" />
+          <div className="h-8 flex items-center">
+           <Button variant="outline"  size="icon" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        </div>
           <div className="font-semibold text-lg">
              <button onClick={scrollToTop}>{title}</button>
           </div>

@@ -813,7 +813,7 @@ const handleform = (type , phase = null , project=null)=>{
         <div className="flex gap-2 items-center mb-2">
           <Building2/><h1 className="text-2xl font-bold">{project.name}</h1>
           </div>
-          <Badge>{getStatusColor(project?.status)}</Badge>
+          <Badge className={getStatusColor(project?.status)}>{project?.status}</Badge>
         </div>
         <div className="flex gap-2">
           <Button className="bg-gradient-primary hover:opacity-90 transition-smooth shadow-construction flex-1 sm:flex-none"
