@@ -143,7 +143,7 @@ function Income() {
   const [allIncomes,setAllIncomes] = useState([]);
   const [totalIncome, setTotalIncome] = useState('');
   const [filteredIncome,setFilteredIncome] = useState(0);
-  const {incomeContext,setIncomeContext,projectContext,phaseContext} = useData();
+  const {incomeContext,setIncomeContext,projectContext,phaseContext,expenseContext} = useData();
   const [globalFilter, setGlobalFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingIncome, setEditIncome] = useState(null);
@@ -155,25 +155,42 @@ function Income() {
   const [activeFilters, setActiveFilters] = useState({}); //for to show the which filter is applied
   const [filterValues,setFilterValues] = useState({});//for two way filter change
   const navigate = useNavigate();
+
+
+  //Expense Data Fetching & setting to local state
+  const [expenses,setExpenses] = useState([]);
+  const [totalExpense,setTotalExpense] = useState('');
+  const [balance,setBalance] = useState('');
+
   useEffect(()=>{
     setIncomes(incomeContext);
     setAllIncomes(incomeContext);
+    setExpenses(expenseContext);
     fetchOptions();
         
-  },[incomeContext,projectContext,phaseContext])
+  },[incomeContext,projectContext,phaseContext,expenseContext])
 
   useEffect(() => {
-  const total = incomes.reduce(
+  const totalIncome = incomes.reduce(
     (sum, income) => sum + (income?.amount || 0),
     0
   );
-   const allTotal = allIncomes.reduce(
+   const allTotalIncome = allIncomes.reduce(
     (sum, income) => sum + (income?.amount || 0),
     0
   );
-  setTotalIncome(allTotal);
-  setFilteredIncome(total);
-}, [incomes,allIncomes]);
+   const totalExpense = expenses.reduce(
+    (sum, expense) => sum + (expense?.amount || 0),
+    0
+  );
+  const totalBalance = allTotalIncome - totalExpense;
+  setTotalExpense(totalExpense);
+  setTotalIncome(allTotalIncome);
+  setFilteredIncome(totalIncome);
+  setBalance(totalBalance);
+}, [incomes,allIncomes,expenses]);
+
+
 
 const fetchOptions =() =>{
       setProjectOptions(projectContext.map(project=>({
@@ -433,8 +450,26 @@ const paymentTotals = allIncomes.reduce((acc, income) => {
                        
                    />
 
-                    {/* ✅ Dynamic payment method StatsCards */}
-                {Object.entries(paymentTotals).map(([method, total]) => (
+                
+                  
+
+                <StatsCard
+                    title="Total Expenses"
+                    value={formatCurrency(totalExpense)}
+                    icon={<ReceiptIndianRupee className="w-5 h-5" />}
+                  />
+                  <StatsCard
+                    title="Total Balance"
+                    value={formatCurrency(balance)}
+                    icon={<ReceiptIndianRupee className="w-5 h-5" />}
+                  />
+                  <StatsCard
+                    title="Total Filtered Income"
+                    value={formatCurrency(filteredIncome)}
+                    icon={<ReceiptIndianRupee className="w-5 h-5" />}
+                  />
+                      {/* ✅ Dynamic payment method StatsCards */}
+                {/* {Object.entries(paymentTotals).map(([method, total]) => (
                   <StatsCard
                     key={method}
                     title={`${method} Income`}
@@ -442,14 +477,7 @@ const paymentTotals = allIncomes.reduce((acc, income) => {
                     icon={<ReceiptIndianRupee className="w-5 h-5" />}
                   />
                 ))}
-                  
-
-                <StatsCard
-                    title="Total Filtered Income"
-                    value={formatCurrency(filteredIncome)}
-                    icon={<ReceiptIndianRupee className="w-5 h-5" />}
-                  />
-                 
+                  */}
          
               </div>
               <ReportDownloader data={incomes}

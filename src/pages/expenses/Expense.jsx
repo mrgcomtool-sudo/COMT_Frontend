@@ -152,7 +152,7 @@ function Expense() {
   const [totalExpense,setTotalExpense] = useState('');
   const [filteredExpense,setFilteredExpense] = useState(0);
   const [expenseType,setExpenseType]= useState('');
-  const {expenseContext,setExpenseContext,projectContext,phaseContext} = useData();
+  const {expenseContext,setExpenseContext,projectContext,phaseContext,incomeContext} = useData();
   const [globalFilter, setGlobalFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingExpense, setEditExpense] = useState(null);
@@ -163,24 +163,38 @@ function Expense() {
   const [activeFilters, setActiveFilters] = useState({}); //for to show the which filter is applied
   const [filterValues,setFilterValues] = useState({});//for two way filter change
   const navigate = useNavigate();
+
+  //Income 
+  const [income,setIncome] = useState([]);
+  const [totalIncome,setTotalIncome] = useState('');
+  const [balance,setBalance] = useState('');
+
   useEffect(()=>{
     setExpenses(expenseContext);
     setAllExpenses(expenseContext);
+    setIncome(incomeContext);
     fetchOptions();
-  },[expenseContext])
+  },[expenseContext,projectContext,phaseContext,incomeContext])
 
   useEffect(() => {
-    const total = expenses.reduce(
+    const totalExpense = expenses.reduce(
       (sum, expense) => sum + (expense?.amount || 0),
       0
     );
-     const allTotal = allExpenses.reduce(
+     const allTotalExpense = allExpenses.reduce(
       (sum, expense) => sum + (expense?.amount || 0),
       0
     );
-    setTotalExpense(allTotal);
-    setFilteredExpense(total);
-  }, [expenses,allExpenses]);
+    const totalIncome = income.reduce(
+      (sum,income) => sum + (income?.amount || 0),
+      0
+    );
+    const totalBalance = totalIncome - allTotalExpense;
+    setTotalExpense(allTotalExpense);
+    setFilteredExpense(totalExpense);
+    setTotalIncome(totalIncome);
+    setBalance(totalBalance);
+  }, [expenses,allExpenses,income]);
   
 const fetchOptions =() =>{
       setProjectOptions(projectContext.map(project=>({
@@ -447,22 +461,32 @@ const paymentTotals = allExpenses.reduce((acc, expense) => {
               />
             <div></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                     <StatsCard
+                                     title="Total Income"
+                                     value={formatCurrency(totalIncome)}
+                                     icon={<ReceiptIndianRupee className="w-5 h-5" />}
+                                   />
                     <StatsCard
-                        title="Total Expense"
+                        title="Total Expenses"
                         value={formatCurrency(totalExpense)}
                         icon={<ReceiptIndianRupee className="w-5 h-5" />}
                       />
                  
                           {/* ✅ Dynamic payment method StatsCards */}
-                                 {Object.entries(paymentTotals).map(([method, total]) => (
+                                 {/* {Object.entries(paymentTotals).map(([method, total]) => (
                                    <StatsCard
                                      key={method}
                                      title={`${method} Expense`}
                                      value={formatCurrency(total)}
                                      icon={<ReceiptIndianRupee className="w-5 h-5" />}
                                    />
-                                 ))}
-                                   
+                                 ))} */}
+                                
+                                   <StatsCard
+                                     title="Total Balance"
+                                     value={formatCurrency(balance)}
+                                     icon={<ReceiptIndianRupee className="w-5 h-5" />}
+                                   />
                  
                                  <StatsCard
                                      title="Total Filtered Expense"
